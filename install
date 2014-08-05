@@ -4,7 +4,7 @@
 # Configurations
 #-----------
 
-ELIXIR_VERSION=${ELIXIR_VERSION-0.14.3}
+ELIXIR_VERSION=${ELIXIR_VERSION-0.15.0}
 
 #-----------
 # Install Script
@@ -19,5 +19,5 @@ sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g /var/apps/elixir/Dockerfile
 output=${ELIXIR_VERSION-text}
 
 (cd /var/apps/elixir && docker build -t elixir .)
-echo "docker run -i -t elixir /bin/bash" > /var/apps/elixir/console
-chmod 755 /var/apps/elixir/console
+echo "docker run -i -t elixir /bin/bash" > /var/apps/elixir/debug
+chmod 755 /var/apps/elixir/debug
