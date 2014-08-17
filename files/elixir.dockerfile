@@ -8,7 +8,17 @@ RUN dpkg -i erlang-solutions_1.0_all.deb
 RUN apt-get update
 RUN apt-get install -y erlang
 
-WORKDIR /tmp/elixir-build
+# ENSURE UTF-8
+RUN locale-gen en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+RUN echo "set nocompatible" > /root/.vimrc
+
+WORKDIR /opt/elixir-build/@ELIXIR_VERSION@
 RUN git clone https://github.com/elixir-lang/elixir.git
+
 WORKDIR elixir
-RUN git checkout v@ELIXIR_VERSION@ && make && make install
+RUN git checkout @ELIXIR_VERSION@
+RUN make install
