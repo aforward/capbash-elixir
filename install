@@ -5,31 +5,50 @@
 #-----------
 
 ELIXIR_VERSION=${ELIXIR_VERSION-v0.15.1}
+ELIXIR_MODE=${ELIXIR_MODE-docker}
 
 #-----------
 # Install Script
 #-----------
 
+echo "Install Elixir..."
+
 INSTALL_DIR=/var/apps/elixir/$ELIXIR_VERSION
 mkdir -p ${INSTALL_DIR}
 
-cp ./submodules/elixir/files/elixir.dockerfile ${INSTALL_DIR}/Dockerfile
-sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${INSTALL_DIR}/Dockerfile
+if [[ "$ELIXIR_MODE" == "docker" ]]; then
+  echo "  -- deploying via docker"
+  cp ./submodules/elixir/files/elixir.dockerfile ${INSTALL_DIR}/Dockerfile
+  sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${INSTALL_DIR}/Dockerfile
 
-printf "%b" "
-.git
-.gitignore
-gitattributes
-.travis.yml
-CHANGELOG.md
-CONTRIBUTING.md
-LEGAL
-LICENSE
-README.md
-RELEASE.md
-" > $INSTALL_DIR/.dockerignore
+  printf "%b" "
+  .git
+  .gitignore
+  gitattributes
+  .travis.yml
+  CHANGELOG.md
+  CONTRIBUTING.md
+  LEGAL
+  LICENSE
+  README.md
+  RELEASE.md
+  " > $INSTALL_DIR/.dockerignore
 
-(cd ${INSTALL_DIR} && docker build -t elixir_${ELIXIR_VERSION} .)
+  (cd ${INSTALL_DIR} && docker build -t elixir_${ELIXIR_VERSION} .)
 
-echo "docker run -i -t elixir_${ELIXIR_VERSION} /bin/bash" > ${INSTALL_DIR}/debug
-chmod 755 ${INSTALL_DIR}/debug
+  echo "docker run -i -t elixir_${ELIXIR_VERSION} /bin/bash" > ${INSTALL_DIR}/debug
+  chmod 755 ${INSTALL_DIR}/debug
+
+else
+  echo "  -- deploying directly with bash"
+
+  cp ./submodules/elixir/files/elixir.bashfile ${INSTALL_DIR}/Bashfile
+  sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${INSTALL_DIR}/Bashfile
+  chmod 755 ${INSTALL_DIR}/Bashfile
+  ${INSTALL_DIR}/Bashfile
+
+  echo "iex" > ${INSTALL_DIR}/debug
+  chmod 755 ${INSTALL_DIR}/debug
+fi
+
+echo "DONE, Install Elixir."
