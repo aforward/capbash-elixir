@@ -45,7 +45,7 @@ fi
 
 if [[ ! -e /opt/elixir-build/@ELIXIR_VERSION@ ]]; then
 
-  GIT_BASE_DIR=/opt/elixir-build/@ELIXIR_VERSION@ \
+  GIT_APPS_DIR=/opt/elixir-build/@ELIXIR_VERSION@ \
     GIT_REPO_NAME=elixir \
     GIT_URL=https://github.com/elixir-lang/elixir.git \
     GIT_BRANCH=@ELIXIR_VERSION@ \
