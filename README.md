@@ -25,7 +25,9 @@ capbash install elixir
 The available configurations include:
 
 ```
-ELIXIR_VERSION=${ELIXIR_VERSION-0.14.3}
+ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.0}
+ELIXIR_MODE=${ELIXIR_MODE-docker}
+ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-/var/local/elixir/$ELIXIR_VERSION}
 ```
 
 # Deploy to Remote Server #
