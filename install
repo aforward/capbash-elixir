@@ -19,20 +19,8 @@ mkdir -p ${ELIXIR_LAUNCHER_DIR}
 if [[ "$ELIXIR_MODE" == "docker" ]]; then
   echo "  -- deploying via docker"
   cp ./submodules/elixir/files/elixir.dockerfile ${ELIXIR_LAUNCHER_DIR}/Dockerfile
+  cp ./submodules/elixir/files/elixir.dockerignore ${ELIXIR_LAUNCHER_DIR}/.dockerignore
   sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Dockerfile
-
-  printf "%b" "
-  .git
-  .gitignore
-  gitattributes
-  .travis.yml
-  CHANGELOG.md
-  CONTRIBUTING.md
-  LEGAL
-  LICENSE
-  README.md
-  RELEASE.md
-  " > $ELIXIR_LAUNCHER_DIR/.dockerignore
 
   (cd ${ELIXIR_LAUNCHER_DIR} && docker build -t elixir_${ELIXIR_VERSION} .)
 
