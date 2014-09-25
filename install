@@ -8,6 +8,8 @@ ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.0}
 ELIXIR_MODE=${ELIXIR_MODE-docker}
 ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-/var/local/elixir/$ELIXIR_VERSION}
 
+DEBUG=${DEBUG-false}
+
 #-----------
 # Install Script
 #-----------
@@ -22,7 +24,7 @@ if [[ "$ELIXIR_MODE" == "docker" ]]; then
   cp ./submodules/elixir/files/elixir.dockerignore ${ELIXIR_LAUNCHER_DIR}/.dockerignore
   sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Dockerfile
 
-  (cd ${ELIXIR_LAUNCHER_DIR} && docker build -t elixir_${ELIXIR_VERSION} .)
+  DEBUG=$DEBUG LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir_${ELIXIR_VERSION} ./submodules/docker/build
 
   echo "docker run -i -t elixir_${ELIXIR_VERSION} /bin/bash" > ${ELIXIR_LAUNCHER_DIR}/debug
   chmod 755 ${ELIXIR_LAUNCHER_DIR}/debug

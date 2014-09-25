@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ERL="`which erl`"
+ERL="`which erl 2> /dev/null`"
 VERSION="$(dirname $ERL)/../lib/erlang/releases/17"
 
 if [[ "$ERL" == "" || ! -e $VERSION ]]; then
