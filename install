@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+source ./bits/bootstrap/logging
 set -euo pipefail ; IFS=$'\n\t'
 
 #-----------
@@ -20,11 +20,11 @@ mkdir -p ${ELIXIR_LAUNCHER_DIR}
 
 if [[ "$ELIXIR_MODE" == "docker" ]]; then
   notify "  -- deploying via docker"
-  cp ./submodules/elixir/files/elixir.dockerfile ${ELIXIR_LAUNCHER_DIR}/Dockerfile
-  cp ./submodules/elixir/files/elixir.dockerignore ${ELIXIR_LAUNCHER_DIR}/.dockerignore
+  cp ./bits/elixir/files/elixir.dockerfile ${ELIXIR_LAUNCHER_DIR}/Dockerfile
+  cp ./bits/elixir/files/elixir.dockerignore ${ELIXIR_LAUNCHER_DIR}/.dockerignore
   sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Dockerfile
 
-  LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir_${ELIXIR_VERSION} ./submodules/docker/build
+  LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir_${ELIXIR_VERSION} ./bits/docker/build
 
   echo "docker run -i -t elixir_${ELIXIR_VERSION} /bin/bash" > ${ELIXIR_LAUNCHER_DIR}/debug
   chmod 755 ${ELIXIR_LAUNCHER_DIR}/debug
@@ -32,7 +32,7 @@ if [[ "$ELIXIR_MODE" == "docker" ]]; then
 else
   notify "  -- deploying directly with bash"
 
-  cp ./submodules/elixir/files/elixir.bashfile ${ELIXIR_LAUNCHER_DIR}/Bashfile
+  cp ./bits/elixir/files/elixir.bashfile ${ELIXIR_LAUNCHER_DIR}/Bashfile
   sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Bashfile
   chmod 755 ${ELIXIR_LAUNCHER_DIR}/Bashfile
   ${ELIXIR_LAUNCHER_DIR}/Bashfile

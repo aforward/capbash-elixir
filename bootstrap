@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir -p ./nodes
-cp ./submodules/elixir/files/elixir_node ./nodes/elixir
+cp ./bits/elixir/files/elixir_node ./nodes/elixir
 chmod 755 ./nodes/elixir
 
 capbash install docker
