@@ -8,7 +8,10 @@ set -euo pipefail ; IFS=$'\n\t'
 
 ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.0}
 ELIXIR_MODE=${ELIXIR_MODE-docker}
-ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-/var/local/elixir/$ELIXIR_VERSION}
+
+LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
+export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}
+export ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-$LAUNCHER_DIR/elixir/$ELIXIR_VERSION}
 
 #-----------
 # Install Script
@@ -16,7 +19,7 @@ ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-/var/local/elixir/$ELIXIR_VERSION}
 
 notify "Install Elixir ($ELIXIR_VERSION)..."
 
-mkdir -p ${ELIXIR_LAUNCHER_DIR}
+OWNER=$LAUNCHER_OWNER ./bits/bootstrap/mkdir LAUNCHER_DIR ELIXIR_LAUNCHER_DIR
 
 if [[ "$ELIXIR_MODE" == "docker" ]]; then
   notify "  -- deploying via docker"
