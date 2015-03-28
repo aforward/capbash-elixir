@@ -27,7 +27,7 @@ if [[ "$ELIXIR_MODE" == "docker" ]]; then
   cp ./bits/elixir/files/elixir.dockerignore ${ELIXIR_LAUNCHER_DIR}/.dockerignore
   sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Dockerfile
 
-  LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir_${ELIXIR_VERSION} ./bits/docker/build
+  LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir VERSION=${ELIXIR_VERSION} ./bits/docker/build
 
   echo "docker run -i -t elixir_${ELIXIR_VERSION} /bin/bash" > ${ELIXIR_LAUNCHER_DIR}/debug
   chmod 755 ${ELIXIR_LAUNCHER_DIR}/debug
