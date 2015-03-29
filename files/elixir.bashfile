@@ -48,7 +48,8 @@ if [[ ! -e /opt/elixir-build/@ELIXIR_VERSION@ ]]; then
   GIT_APPS_DIR=/opt/elixir-build/@ELIXIR_VERSION@ \
     GIT_REPO_NAME=elixir \
     GIT_URL=https://github.com/elixir-lang/elixir.git \
-    GIT_BRANCH=@ELIXIR_VERSION@ \
+    GIT_BRANCH=master \
+    GIT_TAG=@ELIXIR_VERSION@ \
     /var/capbash/submodules/git/install
 
   (cd /opt/elixir-build/@ELIXIR_VERSION@/elixir && make install)

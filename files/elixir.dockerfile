@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM phusion/baseimage:0.9.16
 
 RUN apt-get update
 RUN apt-get install -y wget git build-essential
@@ -14,11 +14,5 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-RUN echo "set nocompatible" > /root/.vimrc
-
-WORKDIR /opt/elixir-build/@ELIXIR_VERSION@
-RUN git clone https://github.com/elixir-lang/elixir.git
-
-WORKDIR elixir
-RUN git checkout @ELIXIR_VERSION@
-RUN make install
+ADD src/elixir-@ELIXIR_VERSION@.tar.gz /opt/elixir
+ENV PATH /opt/elixir/elixir-@ELIXIR_VERSION@/bin:$PATH

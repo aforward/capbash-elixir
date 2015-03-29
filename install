@@ -8,6 +8,7 @@ set -euo pipefail ; IFS=$'\n\t'
 
 ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.0}
 ELIXIR_MODE=${ELIXIR_MODE-docker}
+ELIXIR_DISPLAY=${ELIXIR_DISPLAY-standalone} # or internal
 
 LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
 export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}
@@ -17,9 +18,14 @@ export ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-$LAUNCHER_DIR/elixir/$ELIXIR_VE
 # Install Script
 #-----------
 
-notify "Install Elixir ($ELIXIR_VERSION)..."
+if [[ "$ELIXIR_DISPLAY" == "standalone" ]]; then
+  notify "Install Elixir ($ELIXIR_VERSION)..."
+else
+  notify "  -- install Elixir ($ELIXIR_VERSION)..."
+fi
 
-OWNER=$LAUNCHER_OWNER ./bits/bootstrap/mkdir LAUNCHER_DIR ELIXIR_LAUNCHER_DIR
+OWNER=$LAUNCHER_OWNER ./bits/bootstrap/mkdir LAUNCHER_DIR ELIXIR_LAUNCHER_DIR $ELIXIR_LAUNCHER_DIR/src
+TEMPLATE=./bits/elixir/files/src LOCATION=$ELIXIR_LAUNCHER_DIR/src ./bits/docker/copyallif
 
 if [[ "$ELIXIR_MODE" == "docker" ]]; then
   notify "  -- deploying via docker"
@@ -29,8 +35,7 @@ if [[ "$ELIXIR_MODE" == "docker" ]]; then
 
   LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir VERSION=${ELIXIR_VERSION} ./bits/docker/build
 
-  echo "docker run -i -t elixir_${ELIXIR_VERSION} /bin/bash" > ${ELIXIR_LAUNCHER_DIR}/debug
-  chmod 755 ${ELIXIR_LAUNCHER_DIR}/debug
+  NAME=elixir DIR=$ELIXIR_LAUNCHER_DIR BIT=elixir ./bits/docker/helpers
 
 else
   notify "  -- deploying directly with bash"
@@ -44,4 +49,8 @@ else
   chmod 755 ${ELIXIR_LAUNCHER_DIR}/debug
 fi
 
-notify "DONE, Install Elixir."
+if [[ "$ELIXIR_DISPLAY" == "standalone" ]]; then
+  notify "DONE, Install Elixir."
+else
+  notify "  -- DONE, Install Elixir."
+fi
