@@ -7,12 +7,15 @@ set -euo pipefail ; IFS=$'\n\t'
 #-----------
 
 ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.0}
+ELIXIR_INTERNAL_VERSION=$(echo $ELIXIR_VERSION | cut -d'v' -f 2)
 ELIXIR_MODE=${ELIXIR_MODE-docker}
 ELIXIR_DISPLAY=${ELIXIR_DISPLAY-standalone} # or internal
 
 LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
 export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}
 export ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-$LAUNCHER_DIR/elixir/$ELIXIR_VERSION}
+
+ERLANG_VERSION=${ERLANG_VERSION-17.4-2}
 
 #-----------
 # Install Script
@@ -25,17 +28,27 @@ else
 fi
 
 OWNER=$LAUNCHER_OWNER ./bits/bootstrap/mkdir LAUNCHER_DIR ELIXIR_LAUNCHER_DIR $ELIXIR_LAUNCHER_DIR/src
-TEMPLATE=./bits/elixir/files/src LOCATION=$ELIXIR_LAUNCHER_DIR/src ./bits/docker/copyallif
+
+SRC_NAME=${ELIXIR_VERSION}.tar.gz SRC_DIR=${ELIXIR_LAUNCHER_DIR}/src \
+  TARGET_NAME=elixir-${ELIXIR_INTERNAL_VERSION}.tar.gz \
+  NAME="Elixir ${ELIXIR_VERSION}" \
+  REMOTE_URL=https://github.com/elixir-lang/elixir/archive \
+  ./bits/bootstrap/wget
+
+SRC_NAME=otp_src_${ERLANG_VERSION}.tar.gz SRC_DIR=${ELIXIR_LAUNCHER_DIR}/src \
+  NAME="Erlang ${ERLANG_VERSION}" \
+  REMOTE_URL=http://www.erlang.org/download \
+  ./bits/bootstrap/wget
 
 if [[ "$ELIXIR_MODE" == "docker" ]]; then
   notify "  -- deploying via docker"
-  cp ./bits/elixir/files/elixir.dockerfile ${ELIXIR_LAUNCHER_DIR}/Dockerfile
-  cp ./bits/elixir/files/elixir.dockerignore ${ELIXIR_LAUNCHER_DIR}/.dockerignore
-  sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Dockerfile
+
+  OWNER=$LAUNCHER_OWNER LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR BIT=elixir ./bits/docker/copydockerfile \
+    @ELIXIR_INTERNAL_VERSION@ $ELIXIR_INTERNAL_VERSION \
+    @ERLANG_VERSION@ $ERLANG_VERSION
 
   LAUNCHER_DIR=$ELIXIR_LAUNCHER_DIR NAME=elixir VERSION=${ELIXIR_VERSION} ./bits/docker/build
-
-  NAME=elixir DIR=$ELIXIR_LAUNCHER_DIR BIT=elixir ./bits/docker/helpers
+  NAME=elixir DIR=$ELIXIR_LAUNCHER_DIR BIT=elixir VERSION=${ELIXIR_VERSION} ./bits/docker/helpers
 
 else
   notify "  -- deploying directly with bash"

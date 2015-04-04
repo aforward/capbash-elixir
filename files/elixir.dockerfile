@@ -1,12 +1,9 @@
 FROM phusion/baseimage:0.9.16
 
-RUN apt-get update
-RUN apt-get install -y wget git build-essential
-
-RUN wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-RUN dpkg -i erlang-solutions_1.0_all.deb
-RUN apt-get update
-RUN apt-get install -y erlang
+RUN apt-get update && \
+  apt-get install -y wget git build-essential && \
+  wget http://packages.erlang-solutions.com/site/esl/esl-erlang/FLAVOUR_1_esl/esl-erlang_@ERLANG_VERSION@~ubuntu~trusty_amd64.deb && \
+  dpkg --force-depends -i esl-erlang_@ERLANG_VERSION@~ubuntu~trusty_amd64.deb
 
 # ENSURE UTF-8
 RUN locale-gen en_US.UTF-8
@@ -14,5 +11,8 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-ADD src/elixir-@ELIXIR_VERSION@.tar.gz /opt/elixir
-ENV PATH /opt/elixir/elixir-@ELIXIR_VERSION@/bin:$PATH
+ADD src/elixir-@ELIXIR_INTERNAL_VERSION@.tar.gz /opt/elixir
+
+WORKDIR /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@
+RUN make install
+ENV PATH /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@/bin:$PATH
