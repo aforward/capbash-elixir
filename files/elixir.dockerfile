@@ -16,3 +16,5 @@ ADD src/elixir-@ELIXIR_INTERNAL_VERSION@.tar.gz /opt/elixir
 WORKDIR /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@
 RUN make install
 ENV PATH /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@/bin:$PATH
+
+RUN apt-get -f install -y
