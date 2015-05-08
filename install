@@ -6,10 +6,15 @@ set -euo pipefail ; IFS=$'\n\t'
 # Configurations
 #-----------
 
-ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.0}
+ELIXIR_VERSION=${ELIXIR_VERSION-v1.0.4}
 ELIXIR_INTERNAL_VERSION=$(echo $ELIXIR_VERSION | cut -d'v' -f 2)
 ELIXIR_MODE=${ELIXIR_MODE-docker}
 ELIXIR_DISPLAY=${ELIXIR_DISPLAY-standalone} # or internal
+
+LOG_DIR=${LOG_DIR-/var/log}
+SRC_DIR=${LOG_DIR-/var/src}
+export ELIXIR_LOG_DIR=${ELIXIR_LOG_DIR-$LOG_DIR/elixir}
+export ELIXIR_SRC_DIR=${ELIXIR_SRC_DIR-$SRC_DIR/elixir}
 
 LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
 export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}

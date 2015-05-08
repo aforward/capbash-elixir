@@ -1,1 +1,3 @@
-docker run -i -t
+docker run -it
+  -v ${ELIXIR_LOG_DIR}:/log
+  -v ${ELIXIR_SRC_DIR}:/src
