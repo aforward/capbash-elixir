@@ -13,7 +13,9 @@ ENV LANGUAGE en_US.UTF-8
 
 ADD src/elixir-@ELIXIR_INTERNAL_VERSION@.tar.gz /opt/elixir
 
-WORKDIR /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@
+VOLUME ["/src","/log","/data"]
+
+WORKDIR /src
 RUN make install
 ENV PATH /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@/bin:$PATH
 
