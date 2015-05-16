@@ -12,7 +12,7 @@ ELIXIR_MODE=${ELIXIR_MODE-docker}
 ELIXIR_DISPLAY=${ELIXIR_DISPLAY-standalone} # or internal
 
 LOG_DIR=${LOG_DIR-/var/log}
-SRC_DIR=${LOG_DIR-/var/src}
+SRC_DIR=${SRC_DIR-/var/src}
 export ELIXIR_LOG_DIR=${ELIXIR_LOG_DIR-$LOG_DIR/elixir}
 export ELIXIR_SRC_DIR=${ELIXIR_SRC_DIR-$SRC_DIR/elixir}
 
