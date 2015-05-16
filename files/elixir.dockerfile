@@ -11,7 +11,7 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-ADD src/elixir-@ELIXIR_INTERNAL_VERSION@.tar.gz /opt/elixir
+ADD src/elixir-@ELIXIR_INTERNAL_VERSION@.tar.gz /opt/elixir/
 
 WORKDIR /opt/elixir/elixir-@ELIXIR_INTERNAL_VERSION@
 RUN make install
