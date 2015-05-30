@@ -12,15 +12,15 @@ ELIXIR_MODE=${ELIXIR_MODE-docker}
 ELIXIR_DISPLAY=${ELIXIR_DISPLAY-standalone} # or internal
 
 LOG_DIR=${LOG_DIR-/var/log}
-SRC_DIR=${SRC_DIR-/var/src}
+export SRC_DIR=${SRC_DIR-/var/src}
 export ELIXIR_LOG_DIR=${ELIXIR_LOG_DIR-$LOG_DIR/elixir}
-export ELIXIR_SRC_DIR=${ELIXIR_SRC_DIR-$SRC_DIR/elixir}
+
 
 LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
 export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}
 export ELIXIR_LAUNCHER_DIR=${ELIXIR_LAUNCHER_DIR-$LAUNCHER_DIR/elixir/$ELIXIR_VERSION}
 
-ERLANG_VERSION=${ERLANG_VERSION-17.4-2}
+ERLANG_VERSION=${ERLANG_VERSION-17.5-1}
 
 #-----------
 # Install Script
@@ -40,11 +40,6 @@ SRC_NAME=${ELIXIR_VERSION}.tar.gz SRC_DIR=${ELIXIR_LAUNCHER_DIR}/src \
   REMOTE_URL=https://github.com/elixir-lang/elixir/archive \
   ./bits/bootstrap/wget
 
-SRC_NAME=otp_src_${ERLANG_VERSION}.tar.gz SRC_DIR=${ELIXIR_LAUNCHER_DIR}/src \
-  NAME="Erlang ${ERLANG_VERSION}" \
-  REMOTE_URL=http://www.erlang.org/download \
-  ./bits/bootstrap/wget
-
 if [[ "$ELIXIR_MODE" == "docker" ]]; then
   notify "  -- deploying via docker"
 
@@ -57,14 +52,12 @@ if [[ "$ELIXIR_MODE" == "docker" ]]; then
 
 else
   notify "  -- deploying directly with bash"
+  TEMPLATE=./bits/elixir/files/elixir.bashfile LOCATION=${ELIXIR_LAUNCHER_DIR}/Bashfile \
+    ./bits/docker/copyif \
+    @ELIXIR_VERSION@ $ELIXIR_VERSION
 
-  cp ./bits/elixir/files/elixir.bashfile ${ELIXIR_LAUNCHER_DIR}/Bashfile
-  sed -i s/@ELIXIR_VERSION@/$ELIXIR_VERSION/g ${ELIXIR_LAUNCHER_DIR}/Bashfile
   chmod 755 ${ELIXIR_LAUNCHER_DIR}/Bashfile
   ${ELIXIR_LAUNCHER_DIR}/Bashfile
-
-  echo "iex" > ${ELIXIR_LAUNCHER_DIR}/debug
-  chmod 755 ${ELIXIR_LAUNCHER_DIR}/debug
 fi
 
 if [[ "$ELIXIR_DISPLAY" == "standalone" ]]; then
