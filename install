@@ -60,7 +60,7 @@ else
   ${ELIXIR_LAUNCHER_DIR}/Bashfile
 fi
 
-DIR=$ELIXIR_LAUNCHER_DIR ./bits/bootstrap/cleanup
+DIR=./bits/elixir ./bits/bootstrap/cleanup
 
 if [[ "$ELIXIR_DISPLAY" == "standalone" ]]; then
   notify "DONE, Install Elixir."
